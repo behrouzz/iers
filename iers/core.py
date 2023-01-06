@@ -4,20 +4,9 @@
 ##import os
 ##from urllib.request import urlretrieve
 import pandas as pd
-from .utils import files_dc
+from .formats import files_dc
+from .utils import is_data, extract
 
-def __extract(file):
-    with open(file, 'r') as f:
-        raw = f.read()
-    rawlist = raw.split('\n')
-    data = []
-    for row in rawlist:
-        if len(row)>0:
-            if row[0]!='#':
-                rowlist = row.split(' ')
-                rowlist = [float(i) for i in rowlist if len(i)>0]
-                data.append(rowlist)
-    return raw, data
 
 
 def create_df(file, first_col=None, int_cols=None):
@@ -34,7 +23,7 @@ def create_df(file, first_col=None, int_cols=None):
     --------
         dataframe
     """
-    raw, data = __extract(file)
+    raw, data = extract(file)
     columns = None
     
     if file.split('/')[-1] in files_dc.keys():
@@ -49,7 +38,7 @@ def create_df(file, first_col=None, int_cols=None):
         columns = raw[i1:i2].split(' ')
         columns = [i for i in columns if len(i)>0]
 
-    if (columns is not None) and (len(data[0])!=len(columns)):
+    if (columns is not None) and (len(data[0])!=len(columns)): # IRAD
         columns = None
     
     df = pd.DataFrame(data, columns=columns)
@@ -60,9 +49,9 @@ def create_df(file, first_col=None, int_cols=None):
         df[int_col_names] = df[int_col_names].astype(int)
     return df
 
-
+"""
 def serop_to_df(file):
-    """series/operational to DataFrame"""
-    return create_df(file, first_col='MJD', int_cols=[17,18,19])
+    #series/operational to DataFrame
+    return create_df(file, first_col='Date', int_cols=[17,18,19])
 
-
+"""

@@ -1,46 +1,37 @@
-bs01 = ['an','x','x_er','y','y_er','UT1-TAI','UT1_er',
-        'dX',  'dX_er',  'dY',  'dY_er'  ]
-
-bs02 = ['an','x','x_er','y','y_er','UT1-TAI','UT1_er',
-        'dPsi','dPsi_er','dEps','dEps_er']
+from datetime import datetime, timedelta
 
 
-files_dc = {
-    
-    'eopc01.iau2000.1900-now.dat': {
-        'adr':'eop/eopc01',
-        'cols': bs01,
-        'int':[],
-        },
-    
-    'eopc01.1846-now': {
-        'adr':'eop/eopc01',
-        'cols':[],
-        'int':[17, 18, 19],
-        },
-
-    'eopc01.iau2000.1846-now': {
-        'adr':'eop/eopc01',
-        'cols':['MJD','PM-X','PM-Y','UT1-TAI','DX','DY','X-ERR','Y-ERR',
-                'UT1-ERR','DX-ERR','DY-ERR','RMS DELAY','CORR X-Y','CORR X-U',
-                'CORR Y-U','CORR DX-DY','IND1','IND2','IND3','XRT','YRT',
-                'LOD','DXRT','DYRT','XRT-ERR','YRT-ERR','LOD-ERR','DXRT-ERR',
-                'DYRT-ERR'],
-        'int':[17,18,19],
-        },
-
-    'eopc01.1900-now.dat': {
-        'adr':'',
-        'cols': bs02,
-        'int': [],
-        },
-
-    'TEMPLATE': {
-        'adr': '',
-        'cols': [],
-        'int': [],
-        },
-
-    }
+def is_data(row):
+    isdata = False
+    numbers = sum(i.isdigit() for i in row)
+    letters = sum(i.isalpha() for i in row)
+    #spaces  = sum(i.isspace() for i in row)
+    if (len(row)>1) and (letters==0):
+        #print(numbers/len(row))
+        if (numbers/len(row)) > 0.3:
+            isdata = True
+            
+    return isdata
 
 
+def extract(file):
+    with open(file, 'r') as f:
+        raw = f.read()
+    rawlist = raw.split('\n')
+    data = []
+    for row in rawlist:
+        if is_data(row):
+            rowlist = row.split(' ')
+            rowlist = [float(i) for i in rowlist if len(i)>0]
+            data.append(rowlist)
+    return raw, data
+
+
+def dt_to_mjd(t):
+    t0 = datetime(1858, 11, 17, 0)
+    return (t - t0).total_seconds()/86400
+
+
+def mjd_to_dt(mjd):
+    t0 = datetime(1858, 11, 17, 0)
+    return t0 + timedelta(days=mjd)
