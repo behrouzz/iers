@@ -73,6 +73,7 @@ files_dc = {
         'adr': 'bul/bulc/',
         'cols': col_bc_lps,
         'int': [2,3,4,5],
+        'psi_eps': None, # nabayad inja bashe!!!
         },
 
     # EOP
@@ -80,90 +81,105 @@ files_dc = {
         'adr': 'eop/eopc01/',
         'cols': col_psi_eps,
         'int': [17,18,19],
+        'psi_eps': True,
         },
 
     'eopc01.1900-now.dat': {
         'adr': 'eop/eopc01/',
         'cols': col_psi_eps_brief,
         'int': [],
+        'psi_eps': True,
         },
 
     'eopc01.iau2000.1846-now': {
         'adr': 'eop/eopc01/',
         'cols': col_x_y,
         'int': [17,18,19],
+        'psi_eps': False,
         },
 
     'eopc01.iau2000.1900-now.dat': {
         'adr': 'eop/eopc01/',
         'cols': col_x_y_brief,
         'int': [],
+        'psi_eps': False,
         },
     
     'filtered-pole.tab': { #1900-2023
         'adr': 'eop/eopc01/',
         'cols': ['year', 'xf', 'yf'],
         'int': [],
+        'psi_eps': None,
         },
     
     'mean-pole.tab': { #1900-2016
         'adr': 'eop/eopc01/',
         'cols': ['year', 'xm', 'ym'],
         'int': [],
+        'psi_eps': None,
         },
 
     'eopc04.62-now': {
         'adr': 'eop/eopc04/',
         'cols': col_psi_eps_brief_02,
         'int': [1,2,3],
+        'psi_eps': True,
         },
 
     'eopc04.dPsi_dEps.12h.84-now': {
         'adr': 'eop/eopc04/',
         'cols': col_psi_eps_brief_02[:3]+['hour']+col_psi_eps_brief_02[3:],
         'int': [1,2,3,4],
+        'psi_eps': True,
         },
 
     'eopc04.dPsi_dEps.62-now': {
         'adr': 'eop/eopc04/',
         'cols': col_psi_eps_brief_02,
         'int': [1,2,3],
+        'psi_eps': True,
         },
 
     'eopc04.dX_dY.12h.84-now': {
         'adr': 'eop/eopc04/',
         'cols': col_x_y_brief_02[:3]+['hour']+col_x_y_brief_02[3:],
         'int': [1,2,3,4],
+        'psi_eps': False,
         },
 
     'eopc04_IAU2000.62-now': {
         'adr': 'eop/eopc04/',
         'cols': col_x_y_brief_02,
         'int': [],
+        'psi_eps': False,
         },
 
     'eopc04.12h.1984-now': {
         'adr': 'eop/eopc04_20/',
         'cols': col_x_y_03,
         'int': [1,2,3,4],
+        'psi_eps': False,
         },
 
     'eopc04.1962-now': {
         'adr': 'eop/eopc04_20/',
         'cols': col_x_y_03,
         'int': [1,2,3,4],
+        'psi_eps': False,
         },
 
     'eopc04.dPsi_dEps.12h.1984-now': {
         'adr': 'eop/eopc04_20/',
         'cols': col_psi_eps_03,
         'int': [1,2,3,4],
+        'psi_eps': True,
         },
 
     'eopc04.dPsi_dEps.1962-now': {
         'adr': 'eop/eopc04_20/',
         'cols': col_psi_eps_03,
         'int': [],
+        'psi_eps': True,
         },
 
     # SERIES
@@ -171,36 +187,42 @@ files_dc = {
         'adr': 'series/operational/',
         'cols': col_psi_eps[:3] + ['UT1-UTC'] + col_psi_eps[4:],
         'int': [17,18,19],
+        'psi_eps': True,
         },
     
     'eopc02.1830-now': {
         'adr': 'series/longterm/',
         'cols': col_psi_eps,
         'int': [17,18,19],
+        'psi_eps': True,
         },
 
     'hmnao_a_2021.eop': {
         'adr': 'series/longterm/',
         'cols': col_psi_eps,
         'int': [17,18,19],
+        'psi_eps': True,
         },
 
     'eopc04_extended.dat': {
         'adr': 'series/prediction/',
         'cols': col_x_y_brief_02,
         'int': [1,2,3],
+        'psi_eps': False,
         },
 
     'eopc04R35d_IAU2000_daily': {
         'adr': 'series/opa/',
         'cols': col_x_y_brief_02,
         'int': [1,2,3],
+        'psi_eps': False,
         },
     
     'eopc04R35d_IAU2000': {
         'adr': 'series/opa/',
         'cols': col_x_y_brief_02,
         'int': [1,2,3],
+        'psi_eps': False,
         },
 
 
