@@ -1,6 +1,5 @@
 from datetime import datetime
-from iers.transform import ut1_to_era, era_to_ut1
-from iers.utils import jd_to_dt
+from iers.time import ut1_to_era, era_to_ut1, jd_to_dt
 import numpy as np
 
 d2r = np.pi/180
