@@ -17,20 +17,5 @@ print(era, ' ==%360==> ', era%360)
 ut1 = era_to_ut1(era, date_time=True, degree=True)
 print(ut1)
 
-dt = (ut1-t).microseconds
+dt = (ut1-t).total_seconds() * 1_000_000
 print(f'-> Difference: {dt} microseconds')
-
-"""
-The Persian
-"* alf Ind"|309.3918000320833|-47.2915007225|33.17
-"UCAC4 212-183274"
-
-
-select main_id, ra, dec, plx_value from basic
-where 
-(plx_value<35)
- AND
-(plx_value>31)       
-AND 
-CONTAINS(POINT('ICRS', ra, dec), CIRCLE('ICRS', 309.3918000320833, -47.2915007225, 1)) = 1
-"""
