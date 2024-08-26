@@ -1,6 +1,3 @@
-from .core import create_df
-from .formats import files_dc
-from .time import dt_to_mjd, mjd_to_dt
+from .core import EOP
 
-
-__version__ = "0.0.1"
+__version__ = "1.0.0"

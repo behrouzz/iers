@@ -20,10 +20,8 @@ Time conversions
      |<-------------- delta-T = TT-UT1 -------------->|
     UT1                                            TT/TDT/ET
 
-
-
-
 """
+
 import numpy as np
 from datetime import datetime, timedelta
 import math
@@ -143,8 +141,8 @@ def era_to_ut1(era, date_time=True, degree=True): # IRAD
 # Time Scales
 #====================================================
 
-def ut_to_tai(t):
-    pass
-
-def tai_to_ut(t):
-    pass
+##def ut_to_tai(t):
+##    pass
+##
+##def tai_to_ut(t):
+##    pass

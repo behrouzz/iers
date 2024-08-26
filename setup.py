@@ -5,10 +5,10 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="iers",
-    version="0.0.1",
+    version="1.0.0",
     author="Behrouz Safari",
     author_email="behrouz.safari@gmail.com",
-    description="Analysis data of the International Earth Rotation Srvice (IERS)",
+    description="Retrieve data from International Earth Rotation Srvice (IERS)",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/behrouzz/iers",
