@@ -1,4 +1,4 @@
-**Author:** [Behrouz Safari](https://behrouzz.github.io/astrodatascience/)<br/>
+**Author:** [Behrouz Safari](https://behrouzz.github.io/)<br/>
 **License:** [MIT](https://opensource.org/licenses/MIT)<br/>
 
 # iers
@@ -16,7 +16,7 @@ Requirements are *numpy* and *pandas* and will be installed automatically if nee
 
 ## Quick start
 
-Let's get parameters for the *Julian Date' 2460556.5 and print the results.
+Let's get parameters for the *Julian Date* 2460556.5 and print the results.
 
 ```python
 from iers import EOP
@@ -109,13 +109,30 @@ Output:
 Bulletin used: B
 ```
 
-The files will be downloaded automatically and saved in *Documents* folder of user, so the next time you do not need to download the file again. But if you want newer versions of a file after a while, you can use the `.download()` method to download it again.
+The files will be downloaded automatically and saved in *Documents* folder of user, so the next time you do not need to download the file again. Any file that is older than 7 days, will be downloaded automatically. By the way, if you want newer versions of a file, you can use the `.download()` method to download it again.
 
 ```python
 from iers import EOP
 
 eop = EOP(kind=1)
 eop.download()
+```
+
+## Leap Seconds
+
+To get leap seconds for a given time, pass the time as *datetime* or *Julian Date* or *string* to the `leap_seconds` function.
+
+```python
+from iers import leap_seconds
+
+r = leap_seconds('2012-01-15 15:40:33')
+print(r)
+```
+
+Output:
+
+```
+34
 ```
 
 See more at [https://behrouzz.github.io/astrodatascience/](https://behrouzz.github.io/astrodatascience/)

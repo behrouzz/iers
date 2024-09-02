@@ -35,6 +35,7 @@ def iso2dt(t_str):
     else:
         return datetime.strptime(t_str.replace('T', ' '), '%Y-%m-%d %H:%M:%S')
 
+
 #====================================================
 # JULIAN DATE
 #====================================================
@@ -118,6 +119,53 @@ def jd_to_datetime(jd):
     return dt
 
 #====================================================
+# Any to MJD
+#====================================================
+
+def any2mjd(t):
+    if isinstance(t, datetime):
+        mjd = dt_to_mjd(t)
+    elif (isinstance(t, float)) or (isinstance(t, int)):
+        mjd = t - 2400000.5
+    elif isinstance(t, str):
+        mjd = dt_to_mjd(iso2dt(t))
+    else:
+        raise Exception('Can not parse time')
+    return mjd
+
+#====================================================
+# Leap Second
+#====================================================
+
+def leap_seconds(t):
+    """
+    Returns leap seconds for a given UTC time
+
+    Argument:
+        t (datetime, jd, or str): time
+    Returns:
+        leap seconds
+    """
+    mjd = any2mjd(t)    
+    if mjd < 41317:
+        r = 0
+    else:
+        mjds = [
+            41317.0, 41499.0, 41683.0, 42048.0, 42413.0, 42778.0, 43144.0,
+            43509.0, 43874.0, 44239.0, 44786.0, 45151.0, 45516.0, 46247.0,
+            47161.0, 47892.0, 48257.0, 48804.0, 49169.0, 49534.0, 50083.0,
+            50630.0, 51179.0, 53736.0, 54832.0, 56109.0, 57204.0, 57754.0
+            ]
+        secs = [
+            10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
+            25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37
+            ]
+        ls = [*zip(mjds, secs)]
+        #ls = sorted(ls, key=lambda x: x[0])
+        r = [i for i in ls if i[0]<=mjd][-1][1]
+    return r
+
+#====================================================
 # ERA
 #====================================================
 
@@ -152,3 +200,5 @@ def era_to_ut1(era, date_time=True, degree=True): # IRAD
 ##
 ##def tai_to_ut(t):
 ##    pass
+
+

@@ -3,15 +3,8 @@ import numpy as np
 import pandas as pd
 from urllib.request import urlretrieve
 from datetime import datetime
-from .time import iso2dt, dt_to_mjd
+from .time import any2mjd
 
-
-##def self.__extract(line, i1, i2):
-##    tmp = line[i1-1:i2]
-##    if tmp.strip().replace('.','').replace('-','').isdigit():
-##        return float(tmp)
-##    else:
-##        np.nan
 
 
 class EOP:
@@ -48,6 +41,12 @@ class EOP:
         self.FilePath = self.path + self.FileName
         if not os.path.exists(self.FilePath):
             self.download()
+        else:
+            lm = os.path.getmtime(self.FilePath)
+            lm = datetime.utcfromtimestamp(lm)
+            dt = (datetime.utcnow() - lm).total_seconds()
+            if dt > (86400 * 7):
+                self.download()
         self.read_table()
 
     def download(self):
@@ -142,16 +141,9 @@ class EOP:
         Calculates the interpolated Earth orientation parameters
 
         Argument:
-            t : datetime, jd, or str
+            t (datetime, jd, or str): time
         Returns:
             dc : dictionary of parameters
         """
-        if isinstance(t, datetime):
-            mjd = dt_to_mjd(t)
-        elif (isinstance(t, float)) or (isinstance(t, int)):
-            mjd = t - 2400000.5
-        elif isinstance(t, str):
-            mjd = dt_to_mjd(iso2dt(t))
-
-        return self.interpolate(mjd)
+        return self.interpolate(any2mjd(t))
 
