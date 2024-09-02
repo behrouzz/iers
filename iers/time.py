@@ -29,6 +29,12 @@ import math
 d2r = np.pi/180
 r2d = 180/np.pi
 
+def iso2dt(t_str):
+    if len(t_str)!=19:
+        raise Exception('Date string must be like "2024-02-10 09:30:58"')
+    else:
+        return datetime.strptime(t_str.replace('T', ' '), '%Y-%m-%d %H:%M:%S')
+
 #====================================================
 # JULIAN DATE
 #====================================================

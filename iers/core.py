@@ -2,27 +2,31 @@ import os
 import numpy as np
 import pandas as pd
 from urllib.request import urlretrieve
+from datetime import datetime
+from .time import iso2dt, dt_to_mjd
 
 
-def extract(line, i1, i2):
-    tmp = line[i1-1:i2]
-    if tmp.strip().replace('.','').replace('-','').isdigit():
-        return float(tmp)
-    else:
-        np.nan
+##def self.__extract(line, i1, i2):
+##    tmp = line[i1-1:i2]
+##    if tmp.strip().replace('.','').replace('-','').isdigit():
+##        return float(tmp)
+##    else:
+##        np.nan
 
 
 class EOP:
     def __init__(self, kind=1):
+        self.kind = kind
+        self.table = None
         self.bulletin = None
-        if kind == 4:
+        
+        if self.kind == 4:
             self.BASE = 'https://hpiers.obspm.fr/iers/series/longterm/'
         elif kind in [1,2,3]:
             self.BASE = 'https://datacenter.iers.org/data/latestVersion/'
         else:
             raise Exception('kind must be 1, 2, 3 or 4')
         self.path = os.path.expanduser('~/Documents/')
-        self.kind = kind
         self.__trim = {}
         if self.kind == 1:
             self.FileName = 'finals.all.iau2000.txt'
@@ -44,10 +48,18 @@ class EOP:
         self.FilePath = self.path + self.FileName
         if not os.path.exists(self.FilePath):
             self.download()
+        self.read_table()
 
     def download(self):
         print(f'Downloading {self.URL}...')
         urlretrieve(self.URL, self.FilePath)
+
+    def __extract(self, line, i1, i2):
+        tmp = line[i1-1:i2]
+        if tmp.strip().replace('.','').replace('-','').isdigit():
+            return float(tmp)
+        else:
+            np.nan
 
     def __read1(self, data):
         # https://maia.usno.navy.mil/ser7/readme.finals2000A
@@ -65,21 +77,19 @@ class EOP:
         dx_B = []
         dy_B = []
         for i in data:
-            #flag_A.append(i[16])
-            mjd.append(extract(i, 7, 12))
-            px_A.append(extract(i, 19, 27))
-            py_A.append(extract(i, 38, 46))
-            ut1_utc_A.append(extract(i, 59, 68))
-            dx_A.append(extract(i, 98, 106))
-            dy_A.append(extract(i, 117, 125))
-            px_B.append(extract(i, 135, 144))
-            py_B.append(extract(i, 145, 154))
-            ut1_utc_B.append(extract(i, 155, 165))
-            dx_B.append(extract(i, 166, 175))
-            dy_B.append(extract(i, 176, 185))
+            mjd.append(self.__extract(i, 7, 12))
+            px_A.append(self.__extract(i, 19, 27))
+            py_A.append(self.__extract(i, 38, 46))
+            ut1_utc_A.append(self.__extract(i, 59, 68))
+            dx_A.append(self.__extract(i, 98, 106))
+            dy_A.append(self.__extract(i, 117, 125))
+            px_B.append(self.__extract(i, 135, 144))
+            py_B.append(self.__extract(i, 145, 154))
+            ut1_utc_B.append(self.__extract(i, 155, 165))
+            dx_B.append(self.__extract(i, 166, 175))
+            dy_B.append(self.__extract(i, 176, 185))
 
         dc = {
-            #'flag_A': flag_A,
             'mjd':mjd,
             'px_A':px_A, 'py_A':py_A, 'ut1_utc_A':ut1_utc_A, 'dx_A':dx_A, 'dy_A':dy_A,
             'px_B':px_B, 'py_B':py_B, 'ut1_utc_B':ut1_utc_B, 'dx_B':dx_B, 'dy_B':dy_B,
@@ -104,12 +114,13 @@ class EOP:
         else:
             dc = self.__read234(data)
             df = pd.DataFrame(dc).astype(float)
-        return df
+        self.table = df
     
     def interpolate(self, mjd):
-        df = self.read_table()
+        if self.table is None:
+            self.read_table()
+        df = self.table
         if 'px_A' in df.columns:
-            #del df['falg_A']
             if np.isnan(df[df['mjd']>=mjd].iloc[0]['px_B']): # use Bul.A
                 df = df[[i for i in df.columns if i[-2:]!='_B']]
                 self.bulletin = 'A'
@@ -125,3 +136,22 @@ class EOP:
             if c!='mjd':
                 dc[c] = np.interp(mjd, df['mjd'], df[c])
         return dc
+
+    def get_eop(self, t):
+        """
+        Calculates the interpolated Earth orientation parameters
+
+        Argument:
+            t : datetime, jd, or str
+        Returns:
+            dc : dictionary of parameters
+        """
+        if isinstance(t, datetime):
+            mjd = dt_to_mjd(t)
+        elif (isinstance(t, float)) or (isinstance(t, int)):
+            mjd = t - 2400000.5
+        elif isinstance(t, str):
+            mjd = dt_to_mjd(iso2dt(t))
+
+        return self.interpolate(mjd)
+
