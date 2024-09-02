@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="iers",
-    version="1.0.0",
+    version="1.1.0",
     author="Behrouz Safari",
     author_email="behrouz.safari@gmail.com",
     description="Retrieve data from International Earth Rotation Srvice (IERS)",
