@@ -113,6 +113,8 @@ class EOP:
         else:
             dc = self.__read234(data)
             df = pd.DataFrame(dc).astype(float)
+            if self.kind == 3:
+                df.loc[df['ut1_tai']==99.99, 'ut1_tai'] = np.nan
         self.table = df
     
     def interpolate(self, mjd):
@@ -147,3 +149,38 @@ class EOP:
         """
         return self.interpolate(any2mjd(t))
 
+
+
+def historic_ut1_tt():
+    """Get historic UT1-TT dataframe (Note: MJD is in UT1 scale)"""
+    def kind(mjd):
+        if mjd > 35473.352:
+            k = 3
+        elif mjd > -1409424.0:
+            k = 4
+        else:
+            k = 99
+        return k
+    
+    df3 = EOP(3).table[['mjd', 'ut1_tai']]
+    df4 = EOP(4).table[['mjd', 'ut1_tai']]
+
+    df3 = df3.loc[df3['ut1_tai'].notnull()] #nul
+
+    df3['k'] = df3['mjd'].apply(lambda x: kind(x))
+    df4['k'] = df4['mjd'].apply(lambda x: kind(x))
+
+    df3 = df3[df3['k']>=3]
+    df4 = df4[df4['k']>=4]
+
+    # remove shared lines (there is not!)
+    if df4['mjd'].iloc[-1]==df3['mjd'].iloc[0]:
+        df4 = df4[df4['mjd']!=df4['mjd'].iloc[-1]]
+
+    # concat
+    df3['k'] = 3
+    df4['k'] = 4
+    df = pd.concat([df4, df3], axis=0, ignore_index=True)
+
+    df['ut1_tt'] = df['ut1_tai'] - 32.184
+    return df[['mjd', 'ut1_tt', 'k']]
