@@ -1,7 +1,8 @@
 import os
 import numpy as np
 import pandas as pd
-from urllib.request import urlretrieve
+#from urllib.request import urlretrieve
+import requests
 from datetime import datetime
 from .time import any2mjd
 
@@ -51,7 +52,10 @@ class EOP:
 
     def download(self):
         print(f'Downloading {self.URL}...')
-        urlretrieve(self.URL, self.FilePath)
+        #urlretrieve(self.URL, self.FilePath)
+        response = requests.get(self.URL)
+        with open(self.FilePath, 'wb') as f:
+            f.write(response.content)
 
     def __extract(self, line, i1, i2):
         tmp = line[i1-1:i2]
